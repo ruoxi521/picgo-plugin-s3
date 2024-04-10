@@ -38,6 +38,17 @@ npm run build
 
 在 Picgo 的设置中，找到插件设置，选择导入本地插件，并启用插件。
 
+- 如果遇到报错 npm ERR Cannot read properties of null (reading‘matches‘)
+
+使用如下命令清理 npm 的缓存
+```bash
+npm cache verify 
+```
+
+如未能解决，直接删除 `node_modules`` 目录，并再次运行 
+```bash
+pnpm install
+```
 ## 使用插件
 
 在 Picgo 的图床设置中，找到 Amazon S3 插件设置，翻到最底，选择设置为默认图床。

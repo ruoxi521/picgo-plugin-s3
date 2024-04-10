@@ -4,6 +4,7 @@ import {
   PutObjectCommand,
   GetObjectCommand,
   PutObjectCommandOutput,
+  ObjectCannedACL,
 } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 import {
@@ -54,7 +55,7 @@ function createS3Client(opts: IS3UserConfig): S3Client {
     },
     tls: sslEnabled,
     forcePathStyle: opts.pathStyleAccess,
-    requestHandler: new NodeHttpHandler(httpHandlerOpts),
+    // Removed requestHandler property
   }
 
   const client = new S3Client(clientOptions)
@@ -67,7 +68,7 @@ interface createUploadTaskOpts {
   path: string
   item: IImgInfo
   index: number
-  acl: string
+  acl: string // Assuming acl is a string containing a valid ObjectCannedACL value
   urlPrefix?: string
 }
 
@@ -91,7 +92,7 @@ async function createUploadTask(
   const command = new PutObjectCommand({
     Bucket: opts.bucketName,
     Key: opts.path,
-    ACL: opts.acl,
+    ACL: opts.acl as ObjectCannedACL, // Cast acl to ObjectCannedACL
     Body: body,
     ContentType: contentType,
     ContentEncoding: contentEncoding,
@@ -112,7 +113,7 @@ async function createUploadTask(
       return Promise.reject(err)
     }
   } else {
-    url = `${opts.urlPrefix}/${opts.path}`
+    url = `<span class="math-inline">\{opts\.urlPrefix\}/</span>{opts.path}`
   }
 
   return {
